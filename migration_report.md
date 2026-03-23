@@ -45,9 +45,14 @@ This report provides a snapshot of the current development environment and a ver
 
 ## Migration Script (New macOS Setup)
 
-### Step 1: Bootstrap Homebrew
+### Step 1: Bootstrap Homebrew & Shell Setup
 ```bash
+# Install Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# IMPORTANT: Add Homebrew to your PATH (Apple Silicon)
+(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zshrc
+eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
 ### Step 2: Install Formulae with Version Pins
@@ -55,11 +60,20 @@ This report provides a snapshot of the current development environment and a ver
 # Language Runtimes (Matches current running versions)
 brew install node@25 python@3.13 ruby@3.4
 
-# Link them to your PATH
+# Link them and add to PATH
+# Note: These are keg-only and won't be in your PATH by default.
+echo 'export PATH="/opt/homebrew/opt/node@25/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="/opt/homebrew/opt/python@3.13/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="/opt/homebrew/opt/ruby@3.4/bin:$PATH"' >> ~/.zshrc
+
+# Force link them to system if needed
 brew link --overwrite node@25 python@3.13 ruby@3.4
 
 # Development Utilities
 brew install git git-lfs ripgrep sqlite gh cocoapods
+
+# Apply PATH changes to current terminal
+source ~/.zshrc
 ```
 
 ### Step 3: Install Specific Global npm Tools
